@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pertemuan 16 - Simulasi CRUD Mahasiswa</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <a href="../index.html">← Kembali</a>
+    <h1>Pertemuan 16</h1>
+    <p>Simulasi CRUD Mahasiswa, Login, RESTful API, dan AJAX dengan JavaScript</p>
+  </header>
+
+  <main>
+    <section id="loginPage" class="card login-card">
+      <h2>Login Admin</h2>
+      <p class="hint">Default: <strong>admin</strong> / <strong>admin123</strong></p>
+      <label>Username
+        <input type="text" id="username" placeholder="admin" />
+      </label>
+      <label>Password
+        <input type="password" id="password" placeholder="admin123" />
+      </label>
+      <button onclick="login()">Login</button>
+      <div id="loginMessage" class="message"></div>
+    </section>
+
+    <section id="appPage" class="hidden">
+      <div class="toolbar">
+        <div>
+          <h2>Aplikasi CRUD Mahasiswa</h2>
+          <p>Data tersimpan di localStorage sebagai simulasi database.</p>
+        </div>
+        <button onclick="logout()" class="danger">Logout</button>
+      </div>
+
+      <section class="card">
+        <h3>Form Mahasiswa</h3>
+        <div class="form-grid">
+          <label>NIM <input type="text" id="nim" placeholder="231011450099" /></label>
+          <label>Nama <input type="text" id="nama" placeholder="Nama mahasiswa" /></label>
+          <label>Jurusan <input type="text" id="jurusan" placeholder="Teknik Informatika" /></label>
+          <label>Email <input type="email" id="email" placeholder="email@example.com" /></label>
+        </div>
+        <div class="actions">
+          <button id="btnSimpan" onclick="simpanMahasiswa()">Simpan</button>
+          <button id="btnBatal" onclick="resetForm()" class="secondary">Batal</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="table-header">
+          <h3>Data Mahasiswa</h3>
+          <input type="search" id="keyword" placeholder="Cari nama/NIM/jurusan..." oninput="renderMahasiswa()" />
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>NIM</th>
+                <th>Nama</th>
+                <th>Jurusan</th>
+                <th>Email</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabelMahasiswa"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>Simulasi RESTful API & AJAX</h3>
+        <p>Tekan tombol di bawah untuk mengambil data seperti request AJAX ke API.</p>
+        <button onclick="getApiData()">GET /api/mahasiswa</button>
+        <pre id="apiOutput">Response API akan tampil di sini.</pre>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

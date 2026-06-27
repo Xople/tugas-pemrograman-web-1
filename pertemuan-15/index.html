@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pertemuan 15 - Kalkulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <a href="../index.html" class="back">← Kembali</a>
+    <h1>Pertemuan 15</h1>
+    <p>Kalkulator sederhana menggunakan HTML, CSS, dan JavaScript.</p>
+  </header>
+
+  <main class="container">
+    <section class="card intro">
+      <h2>Kalkulator HTML, CSS, JS</h2>
+      <p>
+        Project ini menampilkan contoh integrasi HTML sebagai struktur, CSS sebagai tampilan,
+        dan JavaScript sebagai logika perhitungan kalkulator.
+      </p>
+    </section>
+
+    <section class="calculator-wrapper">
+      <div class="calculator">
+        <div class="screen">
+          <div id="history" class="history">Riwayat akan tampil di sini</div>
+          <input type="text" id="display" value="0" readonly />
+        </div>
+
+        <div class="buttons">
+          <button class="operator danger" onclick="clearDisplay()">AC</button>
+          <button class="operator" onclick="deleteLast()">⌫</button>
+          <button class="operator" onclick="appendValue('%')">%</button>
+          <button class="operator" onclick="appendValue('/')">÷</button>
+
+          <button onclick="appendValue('7')">7</button>
+          <button onclick="appendValue('8')">8</button>
+          <button onclick="appendValue('9')">9</button>
+          <button class="operator" onclick="appendValue('*')">×</button>
+
+          <button onclick="appendValue('4')">4</button>
+          <button onclick="appendValue('5')">5</button>
+          <button onclick="appendValue('6')">6</button>
+          <button class="operator" onclick="appendValue('-')">−</button>
+
+          <button onclick="appendValue('1')">1</button>
+          <button onclick="appendValue('2')">2</button>
+          <button onclick="appendValue('3')">3</button>
+          <button class="operator" onclick="appendValue('+')">+</button>
+
+          <button class="zero" onclick="appendValue('0')">0</button>
+          <button onclick="appendValue('.')">.</button>
+          <button class="equal" onclick="calculate()">=</button>
+        </div>
+      </div>
+
+      <div class="card info">
+        <h3>Fitur</h3>
+        <ul>
+          <li>Operasi tambah, kurang, kali, bagi, dan persen.</li>
+          <li>Tombol AC untuk menghapus semua input.</li>
+          <li>Tombol hapus satu karakter.</li>
+          <li>Bisa menggunakan keyboard angka dan operator.</li>
+          <li>Validasi input agar ekspresi tidak sembarangan dihitung.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pertemuan 13 - If Else, Switch, Function, Kalkulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <a href="../index.html" class="back">← Kembali</a>
+    <h1>Pertemuan 13</h1>
+    <p>If Else, Switch Case, Function, dan Kalkulator HTML/CSS/JS</p>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>1. If Else: Login Sederhana</h2>
+      <div class="form-grid">
+        <label>Username <input id="loginUsername" type="text" placeholder="admin" /></label>
+        <label>Password <input id="loginPassword" type="password" placeholder="1234" /></label>
+      </div>
+      <button onclick="loginIfElse()">Cek Login</button>
+      <div id="hasilIfElse" class="result">Masukkan username dan password.</div>
+    </section>
+
+    <section class="card">
+      <h2>2. Switch Case: Kategori Harga</h2>
+      <label>Harga Barang
+        <input id="hargaBarang" type="number" placeholder="Contoh: 150000" />
+      </label>
+      <button onclick="kategoriHarga()">Cek Kategori</button>
+      <div id="hasilSwitch" class="result">Kategori harga akan tampil di sini.</div>
+    </section>
+
+    <section class="card">
+      <h2>3. Function: Diskon dan Konversi Suhu</h2>
+      <div class="form-grid">
+        <label>Harga <input id="hargaDiskon" type="number" value="100000" /></label>
+        <label>Diskon (%) <input id="persenDiskon" type="number" value="20" /></label>
+        <label>Suhu Celcius <input id="suhuCelcius" type="number" value="30" /></label>
+      </div>
+      <button onclick="jalankanFunction()">Jalankan Function</button>
+      <div id="hasilFunction" class="result">Hasil function akan tampil di sini.</div>
+    </section>
+
+    <section class="calculator-card">
+      <h2>4. Kalkulator HTML, CSS, JS</h2>
+      <div class="calculator">
+        <input type="text" id="display" readonly />
+        <div class="buttons">
+          <button onclick="clearDisplay()" class="operator">C</button>
+          <button onclick="appendValue('/')" class="operator">/</button>
+          <button onclick="appendValue('*')" class="operator">×</button>
+          <button onclick="deleteLast()" class="operator">⌫</button>
+
+          <button onclick="appendValue('7')">7</button>
+          <button onclick="appendValue('8')">8</button>
+          <button onclick="appendValue('9')">9</button>
+          <button onclick="appendValue('-')" class="operator">-</button>
+
+          <button onclick="appendValue('4')">4</button>
+          <button onclick="appendValue('5')">5</button>
+          <button onclick="appendValue('6')">6</button>
+          <button onclick="appendValue('+')" class="operator">+</button>
+
+          <button onclick="appendValue('1')">1</button>
+          <button onclick="appendValue('2')">2</button>
+          <button onclick="appendValue('3')">3</button>
+          <button onclick="calculate()" class="equal">=</button>
+
+          <button onclick="appendValue('0')" class="zero">0</button>
+          <button onclick="appendValue('.')">.</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

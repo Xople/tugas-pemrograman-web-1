@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rock Paper Scissors — OOP JavaScript</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+<div class="game-root">
+  <h1>Rock Paper Scissors <span>OOP Edition</span></h1>
+
+  <div class="score-grid">
+    <div class="score-card">
+      <p class="score-label">Wins</p>
+      <p class="score-num win" id="score-win">0</p>
+    </div>
+    <div class="score-card">
+      <p class="score-label">Draws</p>
+      <p class="score-num draw" id="score-draw">0</p>
+    </div>
+    <div class="score-card">
+      <p class="score-label">Losses</p>
+      <p class="score-num lose" id="score-lose">0</p>
+    </div>
+  </div>
+
+  <div class="arena">
+    <div class="arena-row">
+      <div class="fighter">
+        <p class="fighter-label">You</p>
+        <span class="fighter-emoji" id="player-emoji">🤔</span>
+        <p class="fighter-name" id="player-name">—</p>
+      </div>
+      <span class="vs-badge">VS</span>
+      <div class="fighter">
+        <p class="fighter-label">CPU</p>
+        <span class="fighter-emoji" id="cpu-emoji" style="filter: blur(3px);">❓</span>
+        <p class="fighter-name" id="cpu-name">—</p>
+      </div>
+    </div>
+    <div class="result-banner idle" id="result-banner">
+      <span>Pick a move to start</span>
+    </div>
+  </div>
+  <div class="streak-row" id="streak-row"></div>
+
+  <p class="choices-title">Your move</p>
+  <div class="choices" id="choices"></div>
+
+  <div class="history-section" id="history-section" style="display: none;">
+    <p class="history-title">
+      Round history
+      <button onclick="game.resetGame()">reset all</button>
+    </p>
+    <div class="history-list" id="history-list"></div>
+  </div>
+
+  <div class="oop-section">
+    <details>
+      <summary>OOP concepts used in this game ▾</summary>
+      <div class="oop-tags" id="oop-tags"></div>
+    </details>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   OOP CONCEPTS DEMONSTRATED:
+   - Classes & Constructors
+   - Inheritance (extends / super)
+   - Encapsulation (private fields #, getters/setters)
+   - Polymorphism (overriding chooseMove())
+   - Abstraction (players hidden behind interface)
+   - Static methods & fields
+   - Singleton pattern (MoveRegistry)
+   - Observer / EventEmitter pattern (GameEventEmitter)
+   - Strategy pattern (CPU AI strategy)
+   - toString() override
+   - instanceof type checking
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   Move — represents a single game option (Rock / Paper / Scissors)
+   Demonstrates: Class, encapsulation, toString override
+---------------------------------------------------------- */
+class Move {
+  constructor(name, emoji) {
+    this.name  = name;
+    this.emoji = emoji;
+    this._beats = null; // name of the Move this one defeats
+  }
+
+  // Set which move name this move defeats
+  setBeats(moveName) {
+    this._beats = moveName;
+  }
+
+  // Returns true if this move defeats `other`
+  beats(other) {
+    return this._beats === other.name;
+  }
+
+  // Override toString so console.log(move) shows its name
+  toString() {
+    return this.name;
+  }
+}
+
+/* ----------------------------------------------------------
+   Player — base class for all player types
+   Demonstrates: Class, encapsulation, getters/setters,
+                 computed properties, public API
+---------------------------------------------------------- */
+class Player {
+  constructor(name) {
+    this.name      = name;
+    this.wins      = 0;
+    this.losses    = 0;
+    this.draws     = 0;
+    this._currentMove = null;
+  }
+
+  // Getter — exposes private move reference
+  get currentMove() {
+    return this._currentMove;
+  }
+
+  // Setter — validates type before assigning
+  set currentMove(move) {
+    if (!(move instanceof Move)) {
+      throw new TypeError(`Expected a Move instance, got ${typeof move}`);
+    }
+    this._currentMove = move;
+  }
+
+  // Computed getter — derived from other properties
+  get totalRounds() {
+    return this.wins + this.losses + this.draws;
+  }
+
+  get winRate() {
+    if (this.totalRounds === 0) return 0;
+    return Math.round((this.wins / this.totalRounds) * 100);
+  }
+
+  recordWin()  { this.wins++; }
+  recordLoss() { this.losses++; }
+  recordDraw() { this.draws++; }
+
+  reset() {
+    this.wins  = 0;
+    this.losses = 0;
+    this.draws  = 0;
+    this._currentMove = null;
+  }
+}
+
+/* ----------------------------------------------------------
+   HumanPlayer — extends Player for the human user
+   Demonstrates: Inheritance (extends), super(), method addition
+---------------------------------------------------------- */
+class HumanPlayer extends Player {
+  constructor(name) {
+    super(name); // call base class constructor
+  }
+
+  // Human picks a move explicitly
+  chooseMove(move) {
+    this.currentMove = move; // uses the inherited setter (with validation)
+  }
+}
+
+/* ----------------------------------------------------------
+   CPUPlayer — extends Player with AI decision making
+   Demonstrates: Inheritance, polymorphism (override chooseMove),
+                 Strategy pattern (strategy param), private data (_history)
+---------------------------------------------------------- */
+class CPUPlayer extends Player {
+  constructor(name, strategy = 'random') {
+    super(name);
+    this.strategy = strategy;  // 'random' | 'biased'
+    this._history = [];        // tracks own past moves for bias logic
+  }
+
+  // Polymorphism: same method name as HumanPlayer, entirely different behavior
+  chooseMove(availableMoves) {
+    let move;
+    if (this.strategy === 'biased') {
+      move = this._biasedPick(availableMoves);
+    } else {
+      move = this._randomPick(availableMoves);
+    }
+    this._history.push(move);
+    this.currentMove = move;
+  }
+
+  _randomPick(moves) {
+    return moves[Math.floor(Math.random() * moves.length)];
+  }
+
+  // Strategy pattern: analyse player's recent moves and try to counter
+  _biasedPick(moves) {
+    if (this._history.length < 3) {
+      return this._randomPick(moves);
+    }
+    // Count frequency of recent player moves (tracked externally via history)
+    // Here: use CPU's own history to mix things up rather than always countering
+    const recent = this._history.slice(-6);
+    const freq = {};
+    recent.forEach(m => { freq[m.name] = (freq[m.name] || 0) + 1; });
+    const leastUsed = Object.keys(freq).reduce((a, b) => freq[a] < freq[b] ? a : b);
+    const pick = moves.find(m => m.name === leastUsed);
+    return pick || this._randomPick(moves);
+  }
+
+  reset() {
+    super.reset(); // call parent reset
+    this._history = [];
+  }
+}
+
+/* ----------------------------------------------------------
+   RoundResult — immutable value object for a single round
+   Demonstrates: Class, static constants, computed getter
+---------------------------------------------------------- */
+class RoundResult {
+  // Static class constants — shared across all instances
+  static WIN  = 'win';
+  static LOSE = 'lose';
+  static DRAW = 'draw';
+
+  constructor(playerMove, cpuMove, outcome, roundNum) {
+    this.playerMove = playerMove;
+    this.cpuMove    = cpuMove;
+    this.outcome    = outcome;
+    this.roundNum   = roundNum;
+    Object.freeze(this); // make immutable
+  }
+
+  get summary() {
+    if (this.outcome === RoundResult.DRAW) return 'Draw!';
+    if (this.outcome === RoundResult.WIN)  return `${this.playerMove.name} beats ${this.cpuMove.name}!`;
+    return `${this.cpuMove.name} beats ${this.playerMove.name}!`;
+  }
+}
+
+/* ----------------------------------------------------------
+   MoveRegistry — Singleton that stores all available moves
+   Demonstrates: Singleton pattern, static private field,
+                 static factory method
+---------------------------------------------------------- */
+class MoveRegistry {
+  static #instance = null; // private static field — only one ever exists
+
+  constructor() {
+    if (MoveRegistry.#instance) {
+      return MoveRegistry.#instance; // return existing instance
+    }
+    this._moves = {};
+    MoveRegistry.#instance = this;
+  }
+
+  // Static factory — preferred way to obtain the singleton
+  static getInstance() {
+    return new MoveRegistry();
+  }
+
+  register(move) {
+    this._moves[move.name] = move;
+    return this; // fluent interface
+  }
+
+  get(name)  { return this._moves[name] || null; }
+  getAll()   { return Object.values(this._moves); }
+}
+
+/* ----------------------------------------------------------
+   GameEventEmitter — Observer/pub-sub event system
+   Demonstrates: Observer pattern, encapsulation, callbacks
+---------------------------------------------------------- */
+class GameEventEmitter {
+  constructor() {
+    this._listeners = {};
+  }
+
+  // Register a listener for an event
+  on(event, fn) {
+    if (!this._listeners[event]) this._listeners[event] = [];
+    this._listeners[event].push(fn);
+    return this; // fluent interface
+  }
+
+  // Fire all listeners for an event
+  emit(event, data) {
+    (this._listeners[event] || []).forEach(fn => fn(data));
+  }
+}
+
+/* ----------------------------------------------------------
+   StreakTracker — tracks consecutive win/loss streaks
+   Demonstrates: Encapsulation, getters, single responsibility
+---------------------------------------------------------- */
+class StreakTracker {
+  constructor() {
+    this._current = 0;
+    this._best    = 0;
+    this._type    = null; // 'win' | 'lose' | null
+  }
+
+  update(outcome) {
+    if (outcome === RoundResult.WIN) {
+      this._current = this._type === 'win' ? this._current + 1 : 1;
+      this._type    = 'win';
+    } else if (outcome === RoundResult.LOSE) {
+      this._current = this._type === 'lose' ? this._current + 1 : 1;
+      this._type    = 'lose';
+    } else {
+      this._current = 0;
+      this._type    = null;
+    }
+    if (this._type === 'win') {
+      this._best = Math.max(this._best, this._current);
+    }
+  }
+
+  get current() { return this._current; }
+  get type()    { return this._type; }
+  get best()    { return this._best; }
+
+  reset() { this._current = 0; this._best = 0; this._type = null; }
+}
+
+/* ----------------------------------------------------------
+   RockPaperScissorsGame — main game engine
+   Demonstrates: Composition, private fields (#), inheritance
+                 (extends GameEventEmitter), encapsulation,
+                 public/private method separation
+---------------------------------------------------------- */
+class RockPaperScissorsGame extends GameEventEmitter {
+  // Private fields — inaccessible outside this class
+  #human;
+  #cpu;
+  #registry;
+  #history;
+  #streak;
+  #round;
+  #locked; // prevents double-clicks mid-animation
+
+  constructor() {
+    super(); // initialise GameEventEmitter
+    this.#human    = new HumanPlayer('You');
+    this.#cpu      = new CPUPlayer('CPU', 'biased');
+    this.#registry = MoveRegistry.getInstance(); // singleton
+    this.#history  = [];
+    this.#streak   = new StreakTracker();
+    this.#round    = 0;
+    this.#locked   = false;
+    this._setupMoves();
+  }
+
+  // Private setup method — called once in constructor
+  _setupMoves() {
+    const rock     = new Move('Rock',     '🪨');
+    const paper    = new Move('Paper',    '📄');
+    const scissors = new Move('Scissors', '✂️');
+
+    // Cyclic beats relationship
+    rock.setBeats('Scissors');
+    paper.setBeats('Rock');
+    scissors.setBeats('Paper');
+
+    // Fluent registration
+    [rock, paper, scissors].forEach(m => this.#registry.register(m));
+  }
+
+  // Public getters — expose read-only state
+  get availableMoves() { return this.#registry.getAll(); }
+  get human()   { return this.#human; }
+  get cpu()     { return this.#cpu; }
+  get history() { return [...this.#history]; } // return copy, not reference
+  get streak()  { return this.#streak; }
+  get round()   { return this.#round; }
+
+  // Core game action — play a round
+  play(moveName) {
+    if (this.#locked) return null;
+    this.#locked = true;
+
+    const move = this.#registry.get(moveName);
+    if (!move) { this.#locked = false; return null; }
+
+    // Players make their choices
+    this.#human.chooseMove(move);
+    this.#cpu.chooseMove(this.availableMoves);
+
+    this.#round++;
+
+    // Resolve outcome
+    const outcome = this._resolveOutcome(
+      this.#human.currentMove,
+      this.#cpu.currentMove
+    );
+
+    // Update stats
+    if (outcome === RoundResult.WIN) {
+      this.#human.recordWin();
+      this.#cpu.recordLoss();
+    } else if (outcome === RoundResult.LOSE) {
+      this.#human.recordLoss();
+      this.#cpu.recordWin();
+    } else {
+      this.#human.recordDraw();
+      this.#cpu.recordDraw();
+    }
+
+    this.#streak.update(outcome);
+
+    // Build immutable result object
+    const result = new RoundResult(
+      this.#human.currentMove,
+      this.#cpu.currentMove,
+      outcome,
+      this.#round
+    );
+    this.#history.unshift(result);
+
+    // Notify all listeners (Observer pattern)
+    this.emit('roundEnd', result);
+
+    // Unlock after animation window
+    setTimeout(() => { this.#locked = false; }, 900);
+    return result;
+  }
+
+  // Determine who won — pure logic, no side effects
+  _resolveOutcome(playerMove, cpuMove) {
+    if (playerMove.name === cpuMove.name) return RoundResult.DRAW;
+    return playerMove.beats(cpuMove) ? RoundResult.WIN : RoundResult.LOSE;
+  }
+
+  // Reset everything
+  resetGame() {
+    this.#human.reset();
+    this.#cpu.reset();
+    this.#history = [];
+    this.#streak.reset();
+    this.#round   = 0;
+    this.#locked  = false;
+    this.emit('reset', {});
+  }
+}
+
+/* ----------------------------------------------------------
+   GameUI — handles all DOM interaction
+   Demonstrates: Separation of concerns, Observer subscription,
+                 single responsibility principle
+---------------------------------------------------------- */
+class GameUI {
+  constructor(game) {
+    this._game = game;
+    this._els  = {
+      playerEmoji: document.getElementById('player-emoji'),
+      playerName:  document.getElementById('player-name'),
+      cpuEmoji:    document.getElementById('cpu-emoji'),
+      cpuName:     document.getElementById('cpu-name'),
+      result:      document.getElementById('result-banner'),
+      scoreWin:    document.getElementById('score-win'),
+      scoreDraw:   document.getElementById('score-draw'),
+      scoreLose:   document.getElementById('score-lose'),
+      choices:     document.getElementById('choices'),
+      histSection: document.getElementById('history-section'),
+      histList:    document.getElementById('history-list'),
+      streakRow:   document.getElementById('streak-row'),
+      oopTags:     document.getElementById('oop-tags'),
+    };
+    this._bindEvents();
+    this._renderChoices();
+    this._renderOopTags();
+  }
+
+  // Subscribe to game events (Observer pattern)
+  _bindEvents() {
+    this._game.on('roundEnd', result => this._onRoundEnd(result));
+    this._game.on('reset',    ()     => this._onReset());
+  }
+
+  // Dynamically build choice buttons from Move registry
+  _renderChoices() {
+    this._game.availableMoves.forEach(move => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.innerHTML = `
+        <span class="btn-emoji">${move.emoji}</span>
+        <span class="btn-label">${move.name}</span>
+      `;
+      btn.onclick = () => this._game.play(move.name);
+      this._els.choices.appendChild(btn);
+    });
+  }
+
+  // Handle a completed round
+  _onRoundEnd(result) {
+    // Update player display
+    this._els.playerEmoji.textContent = result.playerMove.emoji;
+    this._els.playerName.textContent  = result.playerMove.name;
+
+    // Animate CPU reveal
+    const cpuEl = this._els.cpuEmoji;
+    cpuEl.style.filter    = 'blur(6px)';
+    cpuEl.style.transform = 'scale(0.85)';
+
+    setTimeout(() => {
+      cpuEl.textContent     = result.cpuMove.emoji;
+      cpuEl.style.filter    = 'none';
+      cpuEl.style.transform = 'scale(1.25)';
+      cpuEl.style.transition = 'all 0.3s cubic-bezier(.34,1.56,.64,1)';
+      setTimeout(() => { cpuEl.style.transform = 'scale(1)'; }, 300);
+    }, 350);
+
+    this._els.cpuName.textContent = result.cpuMove.name;
+
+    // Update result banner
+    const icons  = { win: '✓', lose: '✗', draw: '=' };
+    const banner = this._els.result;
+    banner.className = 'result-banner ' + result.outcome;
+    banner.innerHTML = `<span>${icons[result.outcome]}</span><span>${result.summary}</span>`;
+
+    // Update scoreboard
+    this._els.scoreWin.textContent  = this._game.human.wins;
+    this._els.scoreDraw.textContent = this._game.human.draws;
+    this._els.scoreLose.textContent = this._game.human.losses;
+
+    // Update streak indicator
+    const s = this._game.streak;
+    if (s.current >= 2) {
+      const label = s.type === 'win'
+        ? `🔥 ${s.current}-round win streak!`
+        : `${s.current} losses in a row…`;
+      this._els.streakRow.textContent = label;
+    } else {
+      this._els.streakRow.textContent = '';
+    }
+
+    this._renderHistory();
+  }
+
+  // Render the round history list
+  _renderHistory() {
+    const hist = this._game.history;
+    if (!hist.length) return;
+    this._els.histSection.style.display = '';
+    this._els.histList.innerHTML = hist.slice(0, 10).map(r => `
+      <div class="history-item">
+        <span class="h-dot ${r.outcome}"></span>
+        <span class="round-badge">Round ${r.roundNum}</span>
+        <span>${r.outcome === 'win' ? 'Won' : r.outcome === 'lose' ? 'Lost' : 'Draw'}</span>
+        <span class="h-emojis">${r.playerMove.emoji} ${r.cpuMove.emoji}</span>
+      </div>
+    `).join('');
+  }
+
+  // Reset the UI to initial state
+  _onReset() {
+    this._els.playerEmoji.textContent  = '🤔';
+    this._els.playerName.textContent   = '—';
+    this._els.cpuEmoji.textContent     = '❓';
+    this._els.cpuEmoji.style.filter    = 'blur(3px)';
+    this._els.cpuName.textContent      = '—';
+    this._els.result.className         = 'result-banner idle';
+    this._els.result.innerHTML         = '<span>Pick a move to start</span>';
+    this._els.scoreWin.textContent     = '0';
+    this._els.scoreDraw.textContent    = '0';
+    this._els.scoreLose.textContent    = '0';
+    this._els.streakRow.textContent    = '';
+    this._els.histSection.style.display = 'none';
+    this._els.histList.innerHTML        = '';
+  }
+
+  // Render OOP concept badges
+  _renderOopTags() {
+    const concepts = [
+      'Classes', 'Encapsulation', 'Inheritance', 'Polymorphism',
+      'Abstraction', 'Getters & Setters', 'Private Fields (#)',
+      'Static Methods', 'Singleton (MoveRegistry)', 'Observer Pattern',
+      'Strategy Pattern (CPU AI)', 'toString() override',
+      'instanceof check', 'super()', 'Object.freeze()',
+      'Fluent Interface', 'Separation of Concerns'
+    ];
+    this._els.oopTags.innerHTML = concepts.map(c =>
+      `<span class="oop-tag">${c}</span>`
+    ).join('');
+  }
+}
+
+/* ----------------------------------------------------------
+   Bootstrap — instantiate and wire everything together
+---------------------------------------------------------- */
+const game = new RockPaperScissorsGame();
+new GameUI(game);
+</script>
+</body>
+</html>

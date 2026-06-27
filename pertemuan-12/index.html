@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pertemuan 12 - Variabel, Output, Operator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <a href="../index.html" class="back">← Kembali</a>
+    <h1>Pertemuan 12</h1>
+    <p>Variabel, Output JavaScript, Operator Aritmatika, Penugasan, dan Pembanding</p>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>1. Variabel: Hitung Total Belanja</h2>
+      <div class="form-grid">
+        <label>Nama Pembeli <input type="text" id="namaPembeli" value="Solehudin" /></label>
+        <label>Harga Buku <input type="number" id="hargaBuku" value="50000" /></label>
+        <label>Jumlah Buku <input type="number" id="jumlahBuku" value="2" /></label>
+        <label>Harga Pulpen <input type="number" id="hargaPulpen" value="5000" /></label>
+        <label>Jumlah Pulpen <input type="number" id="jumlahPulpen" value="3" /></label>
+        <label>Diskon (%) <input type="number" id="diskon" value="10" /></label>
+      </div>
+      <button onclick="hitungBelanja()">Hitung Belanja</button>
+      <div id="hasilBelanja" class="result">Klik tombol untuk menghitung.</div>
+    </section>
+
+    <section class="card">
+      <h2>2. Output: Simulasi Login</h2>
+      <p>Contoh output menggunakan halaman web, console, alert, dan innerHTML.</p>
+      <div class="form-grid">
+        <label>Username <input type="text" id="username" placeholder="admin" /></label>
+        <label>Password <input type="password" id="password" placeholder="1234" /></label>
+      </div>
+      <button onclick="cekLogin()">Login</button>
+      <div id="hasilLogin" class="result">Status login akan tampil di sini.</div>
+    </section>
+
+    <section class="card">
+      <h2>3. Operator: Nilai Mahasiswa</h2>
+      <div class="form-grid">
+        <label>Nilai Tugas <input type="number" id="nilaiTugas" value="80" /></label>
+        <label>Nilai UTS <input type="number" id="nilaiUts" value="85" /></label>
+        <label>Nilai UAS <input type="number" id="nilaiUas" value="90" /></label>
+        <label>Bonus <input type="number" id="bonus" value="5" /></label>
+      </div>
+      <button onclick="hitungNilai()">Hitung Nilai</button>
+      <div id="hasilNilai" class="result">Klik tombol untuk melihat hasil.</div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

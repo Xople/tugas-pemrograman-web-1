@@ -1,0 +1,172 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.hero {
+  position: relative;
+  padding: 36px 20px;
+  text-align: center;
+  color: white;
+  background: linear-gradient(135deg, #0f172a, #2563eb);
+}
+
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: 34px;
+}
+
+.hero p {
+  margin: 0;
+}
+
+.back {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.intro {
+  margin-bottom: 24px;
+}
+
+.intro h2,
+.info h3 {
+  margin-top: 0;
+  color: #2563eb;
+}
+
+.calculator-wrapper {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.calculator {
+  width: 100%;
+  background: #111827;
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+}
+
+.screen {
+  min-height: 110px;
+  margin-bottom: 16px;
+  padding: 14px;
+  background: #020617;
+  border-radius: 16px;
+  color: white;
+}
+
+.history {
+  min-height: 22px;
+  margin-bottom: 10px;
+  color: #94a3b8;
+  font-size: 14px;
+  text-align: right;
+  word-break: break-all;
+}
+
+#display {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: white;
+  font-size: 38px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+button {
+  border: 0;
+  border-radius: 14px;
+  padding: 18px 0;
+  background: #374151;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  background: #4b5563;
+}
+
+.operator {
+  background: #2563eb;
+}
+
+.operator:hover {
+  background: #1d4ed8;
+}
+
+.danger {
+  background: #dc2626;
+}
+
+.danger:hover {
+  background: #b91c1c;
+}
+
+.equal {
+  background: #16a34a;
+}
+
+.equal:hover {
+  background: #15803d;
+}
+
+.zero {
+  grid-column: span 2;
+}
+
+.info ul {
+  padding-left: 20px;
+  line-height: 1.8;
+}
+
+@media (max-width: 760px) {
+  .calculator-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .back {
+    position: static;
+    display: inline-block;
+    margin-bottom: 18px;
+  }
+}

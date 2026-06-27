@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Praktikum Pemrograman Web I</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #1f2937;
+    }
+    header {
+      padding: 40px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      color: white;
+    }
+    main {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+    a.card {
+      display: block;
+      padding: 22px;
+      background: white;
+      border-radius: 16px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, .08);
+      border: 1px solid #e5e7eb;
+    }
+    a.card:hover { transform: translateY(-3px); }
+    h2 { margin-top: 0; color: #2563eb; }
+    p { line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Praktikum Pemrograman Web I</h1>
+    <p>Kumpulan project HTML, CSS, dan JavaScript per pertemuan.</p>
+  </header>
+
+  <main>
+    <div class="grid">
+      <a class="card" href="pertemuan-12/index.html">
+        <h2>Pertemuan 12</h2>
+        <p>Variabel, output, operator aritmatika, penugasan, dan pembanding.</p>
+      </a>
+      <a class="card" href="pertemuan-13/index.html">
+        <h2>Pertemuan 13</h2>
+        <p>If else, switch case, function, dan kalkulator sederhana.</p>
+      </a>
+      <a class="card" href="pertemuan-14/index.html">
+        <h2>Pertemuan 14</h2>
+        <p>Form data mahasiswa dengan fitur tambah, edit, update, dan hapus.</p>
+      </a>
+      <a class="card" href="pertemuan-15/index.html">
+        <h2>Pertemuan 15</h2>
+        <p>Kalkulator sederhana dengan operasi dasar, persen, riwayat, dan dukungan keyboard.</p>
+      </a>
+      <a class="card" href="pertemuan-16/index.html">
+        <h2>Pertemuan 16</h2>
+        <p>Simulasi CRUD, login, API, dan AJAX memakai localStorage.</p>
+      </a>
+      <a class="card" href="pertemuan-17/index.html">
+        <h2>Pertemuan 17</h2>
+        <p>Class, inheritance, object, method, dan game kotak bergerak.</p>
+      </a>
+    </div>
+  </main>
+</body>
+</html>

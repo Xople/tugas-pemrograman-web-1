@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pertemuan 14 - Form Data Mahasiswa</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <a href="../index.html">← Kembali</a>
+    <h1>Pertemuan 14</h1>
+    <p>Form Data Mahasiswa: Tambah, Edit, Update, dan Delete</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Input Data Mahasiswa</h2>
+      <div class="form-container">
+        <label for="nim">NIM:</label>
+        <input type="text" id="nim" placeholder="Masukkan NIM" />
+
+        <label for="nama">Nama:</label>
+        <input type="text" id="nama" placeholder="Masukkan nama" />
+
+        <label for="jurusan">Jurusan:</label>
+        <select id="jurusan">
+          <option value="">Pilih Jurusan</option>
+          <option value="Sistem Informasi">Sistem Informasi</option>
+          <option value="Teknik Informatika">Teknik Informatika</option>
+          <option value="Manajemen">Manajemen</option>
+        </select>
+
+        <label for="fakultas">Fakultas:</label>
+        <select id="fakultas">
+          <option value="">Pilih Fakultas</option>
+          <option value="Teknik">Teknik</option>
+          <option value="Ekonomi">Ekonomi</option>
+          <option value="Ilmu Komputer">Ilmu Komputer</option>
+        </select>
+
+        <div class="buttons">
+          <button id="btnTambah" onclick="tambahMahasiswa()">Tambah Mahasiswa</button>
+          <button id="btnUpdate" onclick="updateMahasiswa()" class="secondary" disabled>Update Data Mahasiswa</button>
+          <button onclick="resetForm()" class="ghost">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Daftar Mahasiswa</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>NIM</th>
+            <th>Nama</th>
+            <th>Jurusan</th>
+            <th>Fakultas</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tabelMahasiswa"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
